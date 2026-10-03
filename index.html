@@ -1,0 +1,664 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>人類圖覺察日誌</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=LXGW+WenKai+TC:wght@300;400;700&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+<style>
+/* Layout: 薰衣草霧色單頁。兩個分頁共用同一份出生資料：「我的命盤」（輸入與完整解析）、「覺察日誌」（流日、日誌、分析、歷史） */
+:root{
+  --bg:#F1EDFB; --bg2:#DDD4F6; --surface:rgba(255,255,255,.72); --ink:#2B2466; --muted:#4A4380;
+  --line:rgba(110,90,200,.28); --accent:#5B47C9; --accent-ink:#FFFFFF; --soft:rgba(110,90,200,.12);
+  --cyan:#2F8FC0; --pink:#B8479F; --glow:#B07A00; --tree1:#B9AEF1; --tree2:#8D80E3; --tree3:#F8F6FF;
+  --hero1:#4B3AB4; --hero2:#7C6BDD;
+  --display:"LXGW WenKai TC","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+  --body:"LXGW WenKai TC","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#17133A; --bg2:#262058; --surface:rgba(255,255,255,.07); --ink:#EEEAFB; --muted:#C3BCEA;
+  --line:rgba(190,180,255,.28); --accent:#B4C0FF; --accent-ink:#17133A; --soft:rgba(190,180,255,.14);
+  --cyan:#7FD0F0; --pink:#F29BDD; --glow:#FFE08A; --tree1:#3B3175; --tree2:#2A2262; --tree3:#4A3F8C;
+  --hero1:#3A2F8C; --hero2:#5B47C9; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#17133A; --bg2:#262058; --surface:rgba(255,255,255,.07); --ink:#EEEAFB; --muted:#C3BCEA;
+  --line:rgba(190,180,255,.28); --accent:#B4C0FF; --accent-ink:#17133A; --soft:rgba(190,180,255,.14);
+  --cyan:#7FD0F0; --pink:#F29BDD; --glow:#FFE08A; --tree1:#3B3175; --tree2:#2A2262; --tree3:#4A3F8C;
+  --hero1:#3A2F8C; --hero2:#5B47C9; color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background-color:var(--bg);background-image:linear-gradient(180deg,var(--bg) 0%,var(--bg2) 100%);background-attachment:fixed;color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.75;padding-inline:16px;padding-block:20px 0}
+.wrap{max-width:960px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+h1,h2,h3{margin:0;font-family:var(--display);line-height:1.3;text-wrap:balance}
+h1{font-size:clamp(30px,6.5vw,46px);font-weight:700;letter-spacing:.04em}
+h2{font-size:24px;font-weight:700}
+h3{font-size:18px;font-weight:700}
+p{margin:0}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.muted{color:var(--muted)}
+header{display:flex;gap:16px;align-items:center;justify-content:space-between}
+header .t{display:flex;flex-direction:column;gap:8px;min-width:0}
+header svg{flex:none;width:clamp(92px,22vw,160px);height:auto}
+.tabs{display:flex;gap:8px;flex-wrap:wrap}
+.tabs button{background:var(--surface);color:var(--ink);border:1px solid var(--line);font-weight:500;min-height:46px;padding:8px 24px}
+.tabs button[aria-selected="true"]{background:var(--accent);color:var(--accent-ink);border-color:transparent;font-weight:700}
+.sub{display:flex;gap:8px;flex-wrap:wrap}
+.sub a{font-size:15px;color:var(--ink);text-decoration:none;border:1px solid var(--line);border-radius:99px;padding:6px 16px;background:var(--surface);min-height:40px;display:inline-flex;align-items:center}
+.sub a:hover{background:var(--soft)}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.view{display:flex;flex-direction:column;gap:28px}
+section{display:flex;flex-direction:column;gap:14px;scroll-margin-top:12px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:20px;min-width:0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+label{display:flex;flex-direction:column;gap:6px;font-size:14px;color:var(--muted);min-width:0}
+input,select,textarea{font:inherit;font-size:16px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 12px;min-height:44px;width:100%;min-width:0}
+textarea{min-height:92px;resize:vertical}
+input[type=range]{padding:0;min-height:44px;accent-color:var(--accent)}
+button{font:inherit;font-weight:700;min-height:44px;padding:8px 20px;border:0;border-radius:99px;background:var(--accent);color:var(--accent-ink);cursor:pointer}
+button.ghost{background:transparent;color:var(--ink);border:1px solid var(--line);font-weight:500}
+button.small{min-height:36px;padding:4px 14px;font-size:14px}
+button:hover{filter:brightness(1.07)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{font-size:14px;padding:2px 12px;border-radius:99px;border:1px solid var(--line);background:var(--soft);white-space:nowrap}
+.chip.on{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+.chip.glow{background:transparent;border:1.5px dashed var(--glow);color:var(--ink)}
+.chip.mono{font-family:var(--mono)}
+.pick input{position:absolute;opacity:0;width:1px;height:1px}
+.pick{position:relative;display:inline-flex;flex-direction:row;font-size:15px;color:var(--ink)}
+.pick span{padding:6px 16px;border-radius:99px;border:1px solid var(--line);background:var(--surface);min-height:40px;display:inline-flex;align-items:center;cursor:pointer}
+.pick input:checked+span{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+.pick input:focus-visible+span{outline:3px solid var(--accent);outline-offset:2px}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.fact{display:flex;flex-direction:column;gap:2px;min-width:0}
+.fact span{font-size:13px;color:var(--muted)}
+.fact b{font-family:var(--display);font-size:20px}
+.fact b i{font-style:normal;font-family:var(--mono);font-size:14px;color:var(--muted);margin-left:6px}
+.bodies{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
+.bd{border:1px solid var(--line);border-radius:14px;padding:8px 12px;background:var(--surface);display:flex;flex-direction:column;min-width:0}
+.bd.mine{border-color:var(--accent);border-width:2px}
+.bd small{color:var(--muted);font-size:12px}
+.bd b{font-family:var(--mono);font-size:16px;font-variant-numeric:tabular-nums}
+.bd span{font-size:13px}
+.q{display:flex;flex-direction:column;gap:10px;padding:0;margin:0;list-style:none}
+.q li{padding:12px 16px;border-left:4px solid var(--accent);background:var(--soft);border-radius:0 14px 14px 0}
+.ins{display:flex;flex-direction:column;gap:10px;margin:0;padding:0;list-style:none}
+.ins li{padding:10px 16px;border-radius:14px;background:var(--soft)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.stat{padding:12px 16px;border-radius:16px;background:var(--soft);display:flex;flex-direction:column}
+.stat b{font-family:var(--display);font-size:28px;line-height:1.2}
+.stat span{font-size:13px;color:var(--muted)}
+svg.chart{width:100%;height:auto;display:block}
+.ax{fill:var(--muted);font:12px var(--mono)}
+.gl{stroke:var(--line);stroke-width:1}
+.ln{stroke:var(--accent);stroke-width:3;fill:none;stroke-linejoin:round;stroke-linecap:round}
+.dot{fill:var(--accent)}
+.dot.end{fill:var(--glow);stroke:var(--accent);stroke-width:2}
+.bar{fill:var(--accent);opacity:.75}
+.hist{display:flex;flex-direction:column;gap:12px}
+.he{display:flex;flex-direction:column;gap:8px}
+.he .top{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.he .when{font-family:var(--display);font-weight:700}
+.he p{font-size:15px;white-space:pre-wrap;overflow-wrap:anywhere}
+.demo{font-size:12px;color:var(--glow);font-family:var(--mono)}
+.note{font-size:14px;color:var(--muted);line-height:1.7}
+.ok{color:var(--accent);font-weight:700;min-height:1.7em}
+.err{color:var(--pink);font-weight:700}
+#exp{display:none}
+/* 命盤頁 */
+.hero{background:linear-gradient(135deg,var(--hero1),var(--hero2));color:#fff;border-radius:24px;padding:24px;display:flex;flex-direction:column;gap:10px}
+.hero .eyebrow{color:#DCD5FF}
+.hero h2{font-size:clamp(30px,6vw,42px);font-weight:700;color:#fff}
+.hero h2 small{font-family:var(--mono);font-size:.38em;font-weight:400;letter-spacing:.08em;margin-left:10px;color:#FFE9A8}
+.hero p{max-width:62ch;color:#F0ECFF}
+.kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+.kvi{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:14px 16px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.kvi b{font-family:var(--display);font-size:20px}
+.kvi span{font-size:14px;color:var(--muted)}
+.cols{display:grid;grid-template-columns:minmax(0,380px) minmax(0,1fr);gap:24px;align-items:start}
+@media (max-width:760px){.cols{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:16px;min-width:0}
+svg.bg{display:block;width:100%;height:auto;max-width:100%}
+.c-def{fill:var(--accent);stroke:var(--ink);stroke-width:1.5}
+.c-und{fill:var(--bg);stroke:var(--muted);stroke-width:1.5}
+.c-txt{font:700 11px var(--body);fill:var(--muted);text-anchor:middle;dominant-baseline:middle}
+.c-txt.def{fill:var(--accent-ink)}
+.ch-off{stroke:var(--line);stroke-width:4;fill:none;stroke-linecap:round}
+.ch-p{stroke:var(--ink);stroke-width:5;fill:none;stroke-linecap:round}
+.ch-d{stroke:var(--pink);stroke-width:5;fill:none;stroke-linecap:round}
+.ch-m{stroke:var(--pink);stroke-width:5;fill:none;stroke-dasharray:7 7}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--muted);margin-top:10px}
+.legend i{display:inline-block;width:18px;height:6px;border-radius:3px;margin-right:6px;vertical-align:middle}
+.stack{display:flex;flex-direction:column;gap:22px;min-width:0}
+.sec{display:flex;flex-direction:column;gap:10px}
+.centers{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px}
+.cen{border:1px solid var(--line);border-radius:16px;padding:10px 12px;font-size:14px;background:var(--surface)}
+.cen b{display:flex;justify-content:space-between;gap:8px;font-weight:700}
+.cen p{color:var(--muted);font-size:13px;line-height:1.55;margin-top:2px}
+.tablebox{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:300px;font-size:15px}
+th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line)}
+th{font-size:12px;letter-spacing:.06em;color:var(--muted);font-weight:500}
+td.n{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.p{color:var(--ink)} .d{color:var(--pink)}
+details summary{cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:center}
+footer{margin-top:8px;display:flex;flex-direction:column;gap:6px}
+footer .f{padding-bottom:16px}
+svg.forest{display:block;width:calc(100% + 32px);margin-left:-16px;height:auto;max-width:none}
+@media (prefers-reduced-motion:no-preference){.view{animation:fade .3s ease-out}@keyframes fade{from{opacity:.5;transform:translateY(6px)}to{opacity:1;transform:none}}}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="t">
+      <span class="eyebrow">Human Design · Daily Awareness</span>
+      <h1>人類圖覺察日誌</h1>
+      <p class="muted">輸入一次出生資料，就能讀懂自己的命盤，並用每天的流日練習覺察。</p>
+    </div>
+    <svg viewBox="0 0 300 240" role="img" aria-label="發光的鹿">
+      <defs><linearGradient id="db" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#A99CEB"/></linearGradient>
+      <radialGradient id="dg" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#BDEBFF" stop-opacity=".7"/><stop offset=".6" stop-color="#E9F2A8" stop-opacity=".25"/><stop offset="1" stop-color="#E9F2A8" stop-opacity="0"/></radialGradient></defs>
+      <ellipse cx="150" cy="120" rx="150" ry="115" fill="url(#dg)"/>
+      <path d="M122,150 L100,180 L72,192 M130,152 L138,190 L128,222 M210,145 L232,178 L215,222 M200,150 L180,185 L196,222" stroke="#5B4BC4" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <ellipse cx="170" cy="128" rx="64" ry="28" transform="rotate(-6 170 128)" fill="url(#db)"/>
+      <path d="M118,120 L92,80" stroke="#E9E4FB" stroke-width="24" stroke-linecap="round" fill="none"/>
+      <ellipse cx="80" cy="66" rx="21" ry="11" transform="rotate(-28 80 66)" fill="#F4F1FF"/>
+      <circle cx="62" cy="76" r="3" fill="#5B4BC4"/><ellipse cx="232" cy="112" rx="9" ry="6" fill="#FFFFFF"/>
+      <path d="M88,56 C80,36 94,20 90,2 M84,40 L68,30 M88,24 L74,12 M90,20 L108,10 M94,58 C102,42 116,36 122,18 M104,44 L124,44 M112,34 L132,26" stroke="#CFF3FF" stroke-width="12" stroke-opacity=".35" stroke-linecap="round" fill="none"/>
+      <path d="M88,56 C80,36 94,20 90,2 M84,40 L68,30 M88,24 L74,12 M90,20 L108,10 M94,58 C102,42 116,36 122,18 M104,44 L124,44 M112,34 L132,26" stroke="#E4F7B0" stroke-width="4" stroke-linecap="round" fill="none"/>
+    </svg>
+  </header>
+
+  <div class="tabs" role="tablist" aria-label="主要頁面">
+    <button type="button" role="tab" id="tab-chart" aria-selected="true" aria-controls="view-chart" data-view="chart">我的命盤</button>
+    <button type="button" role="tab" id="tab-journal" aria-selected="false" aria-controls="view-journal" data-view="journal">覺察日誌</button>
+  </div>
+
+  <!-- 分頁一：我的命盤 -->
+  <div id="view-chart" class="view" role="tabpanel" aria-labelledby="tab-chart">
+    <form id="pf" class="card grid" autocomplete="off" style="align-items:end">
+      <label for="pname">稱呼（選填）<input id="pname" type="text" maxlength="20" value="示範範例"></label>
+      <label for="pdate">出生日期<input id="pdate" type="date" min="1850-01-01" max="2049-12-31" value="1990-05-15" required></label>
+      <label for="ptime">出生時間<input id="ptime" type="time" value="14:30" required></label>
+      <label for="ptz">出生地時區<select id="ptz"></select></label>
+      <button type="submit">計算我的人類圖</button>
+      <p class="note" style="grid-column:1/-1">目前填入的是示範資料。出生資料只存在這台裝置的瀏覽器，不會上傳，而且「覺察日誌」會直接使用同一份。若出生當地有夏令時間，請選擇比標準時區多 1 小時的選項；出生時間差幾分鐘就可能改變角色線或定義，請盡量用出生證明上的時間。</p>
+      <p id="perr" class="err" style="grid-column:1/-1" role="alert" hidden></p>
+    </form>
+    <div id="out" class="view" style="gap:28px"></div>
+  </div>
+
+  <!-- 分頁二：覺察日誌 -->
+  <div id="view-journal" class="view" role="tabpanel" aria-labelledby="tab-journal" hidden>
+    <div class="card" id="mine"></div>
+    <nav class="sub" aria-label="日誌導覽"><a href="#today">今日流日</a><a href="#journal">今日日誌</a><a href="#analysis">覺察分析</a><a href="#history">歷史紀錄</a></nav>
+
+    <section id="today">
+      <h2>今日流日</h2>
+      <div class="row">
+        <label for="day" style="flex-direction:row;align-items:center;gap:10px">查看日期<input id="day" type="date" style="width:auto"></label>
+        <button type="button" class="ghost small" id="goToday">回到今天</button>
+      </div>
+      <div id="flow" class="card" style="display:flex;flex-direction:column;gap:18px"></div>
+    </section>
+
+    <section id="journal">
+      <h2>今日日誌</h2>
+      <form id="jf" class="card" autocomplete="off" style="display:flex;flex-direction:column;gap:18px">
+        <p id="jdate" class="muted"></p>
+        <label for="energy">今天的整體能量：<b id="eout" style="color:var(--ink)">3</b> / 5<input id="energy" type="range" min="1" max="5" step="1" value="3"></label>
+        <fieldset style="border:0;padding:0;margin:0;min-width:0"><legend class="muted" style="font-size:14px;padding:0;margin-bottom:6px">今天出現過的情緒（可多選）</legend><div id="emos" class="chips"></div></fieldset>
+        <fieldset style="border:0;padding:0;margin:0;min-width:0"><legend class="muted" style="font-size:14px;padding:0;margin-bottom:6px">今天有依照策略與內在權威行動嗎？</legend>
+          <div class="chips">
+            <label class="pick"><input type="radio" name="follow" value="yes"><span>有</span></label>
+            <label class="pick"><input type="radio" name="follow" value="part" checked><span>部分有</span></label>
+            <label class="pick"><input type="radio" name="follow" value="no"><span>沒有</span></label>
+          </div></fieldset>
+        <label for="decision">今天做的決定，以及怎麼檢查<textarea id="decision" maxlength="600" placeholder="例如：同事邀我加入專案，我先睡一晚再回覆。"></textarea></label>
+        <label for="note">覺察筆記<textarea id="note" maxlength="1000" placeholder="今天身體、情緒或念頭有什麼值得記下的？"></textarea></label>
+        <div class="row"><button type="submit">儲存今天的日誌</button><button type="button" class="ghost" id="delDay" hidden>刪除這天</button><span id="jmsg" class="ok" role="status"></span></div>
+      </form>
+    </section>
+
+    <section id="analysis">
+      <h2>覺察分析</h2>
+      <div id="an" class="card" style="display:flex;flex-direction:column;gap:20px"></div>
+    </section>
+
+    <section id="history">
+      <h2>歷史紀錄</h2>
+      <div class="row">
+        <button type="button" class="ghost small" id="copyAll">複製全部日誌文字</button>
+        <button type="button" class="ghost small" id="clrDemo" hidden>清除示範資料</button>
+        <span id="hmsg" class="ok" role="status"></span>
+      </div>
+      <textarea id="exp" readonly aria-label="日誌全文" rows="8"></textarea>
+      <div id="hist" class="hist"></div>
+    </section>
+  </div>
+
+  <footer>
+    <p class="note f">行星位置採用簡化天文公式（太陽、月亮、月交點誤差約 0.01°，行星約數角分），足以判斷多數閘門與爻線；若時間恰好落在閘門或爻線邊界，結果可能與專業軟體不同。解讀文字與流日對照為通用示範內容，僅供自我探索與娛樂參考，不構成醫療、心理或財務建議。出生資料與日誌只存在這台裝置的瀏覽器，清除網站資料後會消失。</p>
+    <svg class="forest" viewBox="0 0 960 120" preserveAspectRatio="none" role="img" aria-label="薰衣草色森林剪影">
+      <rect x="20" y="30" width="46" height="100" rx="23" fill="var(--tree1)" opacity=".55"/>
+      <rect x="110" y="10" width="62" height="120" rx="31" fill="var(--tree1)" opacity=".5"/>
+      <circle cx="260" cy="58" r="30" fill="var(--tree2)" opacity=".55"/><circle cx="238" cy="78" r="22" fill="var(--tree2)" opacity=".55"/><circle cx="284" cy="78" r="22" fill="var(--tree2)" opacity=".55"/><rect x="254" y="80" width="12" height="40" fill="var(--tree2)" opacity=".55"/>
+      <rect x="360" y="24" width="54" height="100" rx="27" fill="var(--tree1)" opacity=".5"/>
+      <circle cx="500" cy="64" r="26" fill="var(--tree3)" opacity=".9"/><circle cx="480" cy="80" r="19" fill="var(--tree3)" opacity=".9"/><circle cx="522" cy="80" r="19" fill="var(--tree3)" opacity=".9"/><path d="M500,120 V82" stroke="var(--tree1)" stroke-width="6" stroke-linecap="round"/>
+      <rect x="600" y="16" width="60" height="110" rx="30" fill="var(--tree1)" opacity=".5"/>
+      <circle cx="740" cy="56" r="32" fill="var(--tree2)" opacity=".55"/><circle cx="716" cy="78" r="23" fill="var(--tree2)" opacity=".55"/><circle cx="766" cy="78" r="23" fill="var(--tree2)" opacity=".55"/><rect x="734" y="80" width="12" height="40" fill="var(--tree2)" opacity=".55"/>
+      <rect x="850" y="26" width="50" height="100" rx="25" fill="var(--tree1)" opacity=".5"/>
+      <circle cx="930" cy="70" r="24" fill="var(--tree3)" opacity=".9"/><circle cx="912" cy="86" r="18" fill="var(--tree3)" opacity=".9"/>
+      <ellipse cx="120" cy="124" rx="170" ry="26" fill="var(--tree1)" opacity=".8"/><ellipse cx="420" cy="126" rx="190" ry="24" fill="var(--tree1)" opacity=".8"/><ellipse cx="720" cy="124" rx="180" ry="26" fill="var(--tree1)" opacity=".8"/><ellipse cx="940" cy="126" rx="120" ry="24" fill="var(--tree1)" opacity=".8"/>
+    </svg>
+  </footer>
+</div>
+
+<script>
+(function(){
+"use strict";
+var D=Math.PI/180;
+function norm(x){return ((x%360)+360)%360}
+function $(i){return document.getElementById(i)}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+
+/* ---------- 天文計算（JPL 近似軌道要素 1800–2050） ---------- */
+var EL={
+ mercury:[0.38709927,0.00000037,0.20563593,0.00001906,7.00497902,-0.00594749,252.25032350,149472.67411175,77.45779628,0.16047689,48.33076593,-0.12534081],
+ venus:[0.72333566,0.00000390,0.00677672,-0.00004107,3.39467605,-0.00078890,181.97909950,58517.81538729,131.60246718,0.00268329,76.67984255,-0.27769418],
+ earth:[1.00000261,0.00000562,0.01671123,-0.00004392,-0.00001531,-0.01294668,100.46457166,35999.37244981,102.93768193,0.32327364,0,0],
+ mars:[1.52371034,0.00001847,0.09339410,0.00007882,1.84969142,-0.00813131,-4.55343205,19140.30268499,-23.94362959,0.44441088,49.55953891,-0.29257343],
+ jupiter:[5.20288700,-0.00011607,0.04838624,-0.00013253,1.30439695,-0.00183714,34.39644051,3034.74612775,14.72847983,0.21252668,100.47390909,0.20469106],
+ saturn:[9.53667594,-0.00125060,0.05386179,-0.00050991,2.48599187,0.00193609,49.95424423,1222.49362201,92.59887831,-0.41897216,113.66242448,-0.28867794],
+ uranus:[19.18916464,-0.00196176,0.04725744,-0.00004397,0.77263783,-0.00242939,313.23810451,428.48202785,170.95427630,0.40805281,74.01692503,0.04240589],
+ neptune:[30.06992276,0.00026291,0.00859048,0.00005105,1.77004347,0.00035372,-55.12002969,218.45945325,44.96476227,-0.32241464,131.78422574,-0.00508664],
+ pluto:[39.48211675,-0.00031596,0.24882730,0.00005170,17.14001206,0.00004818,238.92903833,145.20780515,224.06891629,-0.04062942,110.30393684,-0.01183482]
+};
+function helio(k,T){
+  var p=EL[k];function v(i){return p[i]+p[i+1]*T}
+  var a=v(0),e=v(2),I=v(4)*D,L=v(6),w=v(8),Od=v(10),O=Od*D;
+  var M=norm(L-w);if(M>180)M-=360;M*=D;
+  var E=M+e*Math.sin(M);
+  for(var i=0;i<30;i++){E-=(E-e*Math.sin(E)-M)/(1-e*Math.cos(E))}
+  var xp=a*(Math.cos(E)-e),yp=a*Math.sqrt(1-e*e)*Math.sin(E);
+  var om=(w-Od)*D,co=Math.cos(om),so=Math.sin(om),cO=Math.cos(O),sO=Math.sin(O),cI=Math.cos(I);
+  return [(co*cO-so*sO*cI)*xp+(-so*cO-co*sO*cI)*yp,(co*sO+so*cO*cI)*xp+(-so*sO+co*cO*cI)*yp];
+}
+function moonLon(T){
+  var Lp=218.3164477+481267.88123421*T,d=297.8501921+445267.1114034*T,m=357.5291092+35999.0502909*T,mp=134.9633964+477198.8675055*T,f=93.2720950+483202.0175233*T;
+  var E=1-0.002516*T;function s(x){return Math.sin(x*D)}
+  return norm(Lp+6.288774*s(mp)+1.274027*s(2*d-mp)+0.658314*s(2*d)+0.213618*s(2*mp)-0.185116*E*s(m)-0.114332*s(2*f)+0.058793*s(2*d-2*mp)+0.057066*E*s(2*d-m-mp)+0.053322*s(2*d+mp)+0.045758*E*s(2*d-m)-0.040923*E*s(m-mp)-0.034720*s(d)-0.030383*E*s(m+mp)+0.015327*s(2*d-2*f)-0.012528*s(mp+2*f)+0.010980*s(mp-2*f)+0.010675*s(4*d-mp)+0.010034*s(3*mp)+0.008548*s(4*d-2*mp)-0.007888*E*s(2*d+m-mp)-0.006766*E*s(2*d+m)-0.005163*s(d-mp)+0.004987*E*s(d+m)+0.004036*E*s(2*d-m+mp)+0.003994*s(2*d+2*mp)+0.003861*s(4*d)+0.003665*s(2*d-3*mp));
+}
+var PLANETS=[["mercury","水星"],["venus","金星"],["mars","火星"],["jupiter","木星"],["saturn","土星"],["uranus","天王星"],["neptune","海王星"],["pluto","冥王星"]];
+function sunLon(jd){var T=(jd-2451545)/36525,e=helio("earth",T);return norm(Math.atan2(-e[1],-e[0])/D+1.396971*T+0.0003086*T*T)}
+function bodies(jd){
+  var T=(jd-2451545)/36525,pr=1.396971*T+0.0003086*T*T,e=helio("earth",T);
+  var sun=norm(Math.atan2(-e[1],-e[0])/D+pr),node=norm(125.0445479-1934.1362891*T+0.0020754*T*T);
+  var out=[["太陽",sun],["地球",norm(sun+180)],["北交點",node],["南交點",norm(node+180)],["月亮",moonLon(T)]];
+  PLANETS.forEach(function(p){var h=helio(p[0],T);out.push([p[1],norm(Math.atan2(h[1]-e[1],h[0]-e[0])/D+pr)])});
+  return out;
+}
+function designJD(jd){var target=norm(sunLon(jd)-88),j=jd-88;for(var i=0;i<12;i++){var diff=((sunLon(j)-target+540)%360)-180;j-=diff/0.9856}return j}
+
+/* ---------- 人類圖資料 ---------- */
+var SEQ=[41,19,13,49,30,55,37,63,22,36,25,17,21,51,42,3,27,24,2,23,8,20,16,35,45,12,15,52,39,53,62,56,31,33,7,4,29,59,40,64,47,6,46,18,48,57,32,50,28,44,1,43,14,34,9,5,26,11,10,58,38,54,61,60];
+function gateLine(lon){var x=norm(lon-302),gi=Math.floor(x/5.625),ln=Math.floor((x-gi*5.625)/0.9375)+1;return {gate:SEQ[gi],line:Math.min(6,Math.max(1,ln)),gi:gi,x:x}}
+var GK={1:"自我表達",2:"方向感",3:"秩序",4:"找答案",5:"固定節奏",6:"界線與親密",7:"領導角色",8:"貢獻",9:"專注",10:"自我行為",11:"點子",12:"謹慎表達",13:"傾聽",14:"力量與資源",15:"極端與包容",16:"熱忱",17:"意見",18:"修正",19:"需求",20:"活在當下",21:"掌控",22:"優雅",23:"洞見表達",24:"回顧與領悟",25:"純真",26:"說服力",27:"滋養照顧",28:"追尋意義",29:"承諾",30:"渴望",31:"影響力",32:"延續",33:"隱退沉澱",34:"力量",35:"改變",36:"危機與成長",37:"友誼",38:"奮鬥",39:"挑釁",40:"獨處",41:"幻想",42:"成長",43:"突破",44:"警覺",45:"聚集",46:"身體之愛",47:"領悟",48:"深度",49:"原則",50:"價值",51:"衝擊",52:"靜止專注",53:"開始",54:"野心",55:"精神豐盛",56:"刺激故事",57:"直覺",58:"活力",59:"親密",60:"接受限制",61:"內在真理",62:"細節",63:"質疑",64:"困惑整理"};
+var CEN=[
+ {id:"head",zh:"頭腦中心",pts:"180,16 152,58 208,58",lx:180,ly:46,short:"頭腦",gates:[64,61,63],t:"靈感與疑問的壓力"},
+ {id:"ajna",zh:"邏輯中心",pts:"152,86 208,86 180,124",lx:180,ly:100,short:"邏輯",gates:[47,24,4,17,43,11],t:"思考、分析與概念化"},
+ {id:"throat",zh:"喉嚨中心",pts:"154,150 206,150 206,190 154,190",lx:180,ly:170,short:"喉嚨",gates:[62,23,56,35,12,45,33,8,31,20,16],t:"表達與行動的出口"},
+ {id:"g",zh:"G 中心",pts:"180,222 210,250 180,278 150,250",lx:180,ly:251,short:"G",gates:[1,13,25,46,2,15,10,7],t:"自我認同、愛與人生方向"},
+ {id:"heart",zh:"意志力中心",pts:"238,250 272,262 246,288",lx:254,ly:271,short:"意志",gates:[21,40,26,51],t:"意志力、承諾與自我價值"},
+ {id:"spleen",zh:"脾中心",pts:"90,298 90,364 34,331",lx:68,ly:332,short:"脾",gates:[48,57,44,50,32,28,18],t:"直覺、免疫力與安全感"},
+ {id:"sacral",zh:"薦骨中心",pts:"150,330 210,330 210,380 150,380",lx:180,ly:355,short:"薦骨",gates:[5,14,29,59,9,3,42,27,34],t:"生命力、工作能量與回應"},
+ {id:"sp",zh:"情緒中心",pts:"268,342 328,308 328,376",lx:307,ly:343,short:"情緒",gates:[6,37,22,36,30,55,49],t:"情緒波動與感受深度"},
+ {id:"root",zh:"根部中心",pts:"150,415 210,415 210,465 150,465",lx:180,ly:441,short:"根部",gates:[53,60,52,19,39,41,58,38,54],t:"壓力與推動事情的動力"}
+];
+var G2C={};CEN.forEach(function(c){c.gates.forEach(function(g){G2C[g]=c.id})});
+function cenOf(id){for(var i=0;i<CEN.length;i++)if(CEN[i].id===id)return CEN[i]}
+var CH=[
+ [64,47,"168,52 168,92"],[61,24,"180,52 180,92"],[63,4,"192,52 192,92"],
+ [17,62,"166,110 166,156"],[43,23,"180,110 180,156"],[11,56,"194,110 194,156"],
+ [8,1,"180,184 180,226"],[31,7,"167,184 169,236"],[33,13,"194,184 192,236"],[10,20,"157,184 160,244"],
+ [20,57,"156,170 88,306"],[16,48,"156,160 66,318"],
+ [20,34,"156,186 140,200 140,336 152,344"],[10,34,"154,252 156,334"],[10,57,"152,256 86,318"],
+ [46,29,"165,266 164,334"],[2,14,"180,274 180,334"],[15,5,"195,266 196,334"],
+ [25,51,"204,246 244,262"],[21,45,"252,258 206,178"],[26,44,"242,278 90,328"],[37,40,"258,282 292,320"],
+ [12,22,"206,166 296,330"],[35,36,"206,180 316,320"],[59,6,"208,352 280,345"],
+ [3,60,"165,376 165,420"],[42,53,"180,376 180,420"],[9,52,"195,376 195,420"],
+ [57,34,"92,342 154,350"],[50,27,"92,352 154,362"],
+ [32,54,"54,340 154,428"],[28,38,"66,346 154,442"],[18,58,"82,354 154,454"],
+ [19,49,"208,432 306,358"],[39,55,"208,446 318,366"],[41,30,"208,458 324,368"]
+];
+var TYPES={
+ gen:{zh:"生產者",en:"Generator",pct:"約 37%",strat:"等待回應",sig:"滿足",notSelf:"挫敗",nots:["挫敗"],d:"你擁有穩定而可持續的生命力。當你投入真正讓你有感覺的事，能量會源源不絕；先讓生活拋出問題，再用薦骨的「嗯哼／嗯嗯」去回應，比硬找方向更順。"},
+ mg:{zh:"顯示生產者",en:"Manifesting Generator",pct:"約 33%",strat:"等待回應，回應之後再告知身邊的人",sig:"滿足與平靜",notSelf:"挫敗與憤怒",nots:["挫敗","憤怒"],d:"你兼具持續的生命力與快速行動的能力，擅長同時處理多件事並走捷徑。先回應，再告知相關的人你要做什麼，可減少衝突；跳過不再有感覺的步驟是你的天賦，不是缺點。"},
+ pro:{zh:"投射者",en:"Projector",pct:"約 20%",strat:"等待被邀請",sig:"成功",notSelf:"苦澀",nots:["苦澀"],d:"你是天生的引導者與觀察者，擅長看見別人的運作方式。能量不屬於持續輸出型，因此需要充足休息；當你被真正認可並受到邀請，建議才會被聽進去。"},
+ man:{zh:"顯示者",en:"Manifestor",pct:"約 9%",strat:"行動前先告知",sig:"平靜",notSelf:"憤怒",nots:["憤怒"],d:"你有發起事情的能力，行動時帶有影響他人的力量。在行動前先告知會受影響的人，可以減少阻力，讓你能自由地做自己想做的事。"},
+ ref:{zh:"反映者",en:"Reflector",pct:"約 1%",strat:"等待一個月亮週期（約 28 天）再做重大決定",sig:"驚喜",notSelf:"失望",nots:["失望"],d:"你九大中心全部開放，像一面鏡子反映周遭環境與社群的狀態。選對環境與人對你特別重要，重大決定給自己約一個月亮週期的時間沉澱。"}
+};
+var AUTH={
+ sp:{n:"情緒權威",d:"情緒有高低波動，沒有「當下的真相」。等情緒浪潮平靜、經過一段時間再做決定，通常更清晰。",q:"等情緒浪潮平靜，睡一覺再決定。今天的決定，是在情緒高點或低點做的嗎？"},
+ sa:{n:"薦骨權威",d:"相信身體當下的回應（有感覺或沒感覺）。把問題簡化成是非題，聽內在的聲音，而非腦中的分析。",q:"用是非題問身體。今天身體對這件事，是「嗯哼」還是「嗯嗯」？"},
+ spl:{n:"直覺權威",d:"直覺只會出現一次，輕、快、安靜。留意瞬間的身體感受與當下的直覺，不必再三推敲。",q:"直覺只說一次。今天有沒有一個瞬間的直覺，我後來有沒有跟隨它？"},
+ ego:{n:"意志力權威",d:"問自己「我真的想要、也願意承諾嗎？」用內心的意願，而非責任感，來決定該投入什麼。",q:"問自己是否真的想要。今天我答應的事，是想要，還是覺得應該？"},
+ self:{n:"自我投射權威",d:"邊說邊聽自己。找可信任的人討論，從自己說出口的內容裡聽見答案。",q:"邊說邊聽自己。今天我有沒有把想法說給信任的人聽？"},
+ men:{n:"外在權威（環境與對話）",d:"與信任的人討論，並在不同環境中感受，從對話與場域的回饋裡找到自己的清晰。",q:"換環境、找人討論。今天我和誰談過，聽見自己說了什麼？"},
+ lun:{n:"月亮週期權威",d:"約 28 天的月亮週期，讓決定在不同的日子裡反覆感受，再看哪個答案穩定。",q:"給決定一個月亮週期。今天有沒有急著決定的事，可以先放著？"}
+};
+var PNAME=["","探究者","隱士","實驗者","機會主義者","異端者","角色典範"];
+var PDESC=["","重視基礎與研究，必須有安全感與足夠知識，才會有信心行動。","天賦自然，傾向獨處；需要被人從外頭「叫出來」，才會發揮才能。","透過嘗試、犯錯與調整來學習，是最擅長從經驗中找出什麼行不通的人。","以人脈與親近的關係帶來機會，穩定的人際網絡是你的資源。","容易被他人投射期待，具實用解決問題的能力，需要管理好形象與承諾。","人生分三階段：先實驗、再退後觀察，最後成為值得信賴的角色典範。"];
+var DEF_ZH=["無定義","單一定義","二分定義","三分定義","四分定義"];
+var DEF_D=["沒有任何通道相連，是反映者的特徵。","所有已定義中心彼此相連，內在能量運作一致，能自己完成整合。","有兩個彼此分開的能量區塊；常需要透過他人或環境「搭橋」，在人際互動中覺得完整。","有三個分開的區塊，多元而靈活，需要較多變化與不同的人際刺激。","有四個分開的區塊，非常少見；需要時間與空間來消化，也適合在人群中慢慢找到節奏。"];
+var TZS=[[-12,"UTC−12"],[-11,"UTC−11"],[-10,"UTC−10（夏威夷）"],[-9,"UTC−9（阿拉斯加）"],[-8,"UTC−8（洛杉磯、溫哥華）"],[-7,"UTC−7（丹佛）"],[-6,"UTC−6（芝加哥、墨西哥城）"],[-5,"UTC−5（紐約、多倫多）"],[-4,"UTC−4"],[-3,"UTC−3（巴西、阿根廷）"],[-2,"UTC−2"],[-1,"UTC−1"],[0,"UTC+0（倫敦標準時間）"],[1,"UTC+1（巴黎、柏林）"],[2,"UTC+2（雅典、開羅）"],[3,"UTC+3（莫斯科、伊斯坦堡）"],[3.5,"UTC+3:30（德黑蘭）"],[4,"UTC+4（杜拜）"],[5,"UTC+5"],[5.5,"UTC+5:30（印度）"],[6,"UTC+6"],[7,"UTC+7（曼谷、雅加達、越南）"],[8,"UTC+8（台灣、香港、中國、新加坡、馬來西亞）"],[9,"UTC+9（日本、韓國）"],[9.5,"UTC+9:30（阿德雷德、達爾文）"],[10,"UTC+10（雪梨、墨爾本）"],[11,"UTC+11"],[12,"UTC+12（紐西蘭）"]];
+
+function analyze(y,mo,d,h,mi,tz){
+  var ms=Date.UTC(y,mo-1,d,h,mi)-tz*3600000,jd=ms/86400000+2440587.5,jdD=designJD(jd);
+  var P=bodies(jd),Dz=bodies(jdD),act={};
+  function add(arr,src){arr.forEach(function(b){var g=gateLine(b[1]);b.push(g);(act[g.gate]=act[g.gate]||[]).push({src:src,body:b[0],line:g.line})})}
+  add(P,"P");add(Dz,"D");
+  var defCh=[],defKey={},defC={},adj={};
+  CEN.forEach(function(c){adj[c.id]=[]});
+  CH.forEach(function(c){
+    if(act[c[0]]&&act[c[1]]){
+      var srcs={};act[c[0]].concat(act[c[1]]).forEach(function(a){srcs[a.src]=1});
+      defCh.push({a:c[0],b:c[1],pts:c[2],kind:!srcs.D?"p":!srcs.P?"d":"m",ca:G2C[c[0]],cb:G2C[c[1]]});
+      defKey[c[0]+"-"+c[1]]=1;
+    }
+  });
+  defCh.forEach(function(c){defC[c.ca]=1;defC[c.cb]=1;adj[c.ca].push(c.cb);adj[c.cb].push(c.ca)});
+  var seen={},comps=0;
+  Object.keys(defC).forEach(function(id){if(seen[id])return;comps++;var st=[id];seen[id]=1;while(st.length){var x=st.pop();adj[x].forEach(function(n){if(!seen[n]){seen[n]=1;st.push(n)}})}});
+  var th={throat:1},st2=["throat"];
+  while(st2.length){var q=st2.pop();adj[q].forEach(function(n){if(!th[n]){th[n]=1;st2.push(n)}})}
+  var motor=th.heart||th.sp||th.root,type;
+  if(!defCh.length)type="ref";else if(defC.sacral)type=th.sacral?"mg":"gen";else type=motor?"man":"pro";
+  var auth;
+  if(type==="ref")auth="lun";else if(defC.sp)auth="sp";else if(defC.sacral)auth="sa";else if(defC.spleen)auth="spl";else if(defC.heart)auth="ego";else if(defC.g)auth="self";else auth="men";
+  var pf=[P[0][2].line,Dz[0][2].line];
+  return {P:P,D:Dz,act:act,ch:defCh,defKey:defKey,defC:defC,comps:type==="ref"?0:comps,type:type,auth:auth,prof:pf};
+}
+
+/* ---------- 儲存 ---------- */
+var K_P="hd_aw_profile",K_E="hd_aw_entries",K_V="hd_aw_view";
+function load(k,def){try{var v=localStorage.getItem(k);return v?JSON.parse(v):def}catch(e){return def}}
+function save(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}}
+var prof=load(K_P,null)||{name:"示範範例",date:"1990-05-15",time:"14:30",tz:8,demo:true};
+var natal=null;
+function pad(n){return (n<10?"0":"")+n}
+function ymd(d){return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())}
+function dayJD(s){
+  var m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(s);if(!m)return Date.now()/86400000+2440587.5;
+  var now=new Date(),dt=ymd(now)===s?now:new Date(+m[1],+m[2]-1,+m[3],12,0,0);
+  return dt.getTime()/86400000+2440587.5;
+}
+function computeNatal(){
+  var dm=/^(\d{4})-(\d{2})-(\d{2})$/.exec(prof.date),tm=/^(\d{2}):(\d{2})/.exec(prof.time);
+  natal=analyze(+dm[1],+dm[2],+dm[3],+tm[1],+tm[2],+prof.tz);
+}
+
+/* ---------- 分頁一：我的命盤 ---------- */
+function svgBody(r){
+  var s='<svg class="bg" viewBox="0 0 360 490" role="img" aria-label="人類圖能量中心與通道示意圖">';
+  CH.forEach(function(c){s+='<polyline class="ch-off" points="'+c[2]+'"/>'});
+  r.ch.forEach(function(c){
+    if(c.kind==="p")s+='<polyline class="ch-p" points="'+c.pts+'"/>';
+    else if(c.kind==="d")s+='<polyline class="ch-d" points="'+c.pts+'"/>';
+    else s+='<polyline class="ch-p" points="'+c.pts+'"/><polyline class="ch-m" points="'+c.pts+'"/>';
+  });
+  CEN.forEach(function(c){var on=r.defC[c.id];
+    s+='<polygon class="'+(on?"c-def":"c-und")+'" points="'+c.pts+'"/><text class="c-txt'+(on?" def":"")+'" x="'+c.lx+'" y="'+c.ly+'">'+c.short+'</text>'});
+  return s+'</svg>';
+}
+function renderChart(){
+  var r=natal,T=TYPES[r.type],A=AUTH[r.auth],p=r.prof,name=prof.name,h="";
+  h+='<section class="hero"><span class="eyebrow">'+esc(name?name+" 的人類圖":"你的人類圖")+'</span><h2>'+T.zh+'<small>'+T.en+'</small></h2><p>'+T.d+'</p></section>';
+  h+='<section class="kv">'
+   +'<div class="kvi"><span>人生策略</span><b>'+T.strat+'</b></div>'
+   +'<div class="kvi"><span>內在權威</span><b>'+A.n+'</b></div>'
+   +'<div class="kvi"><span>人生角色</span><b>'+p[0]+' / '+p[1]+'　'+PNAME[p[0]]+' / '+PNAME[p[1]]+'</b></div>'
+   +'<div class="kvi"><span>定義</span><b>'+DEF_ZH[r.comps]+'</b></div>'
+   +'<div class="kvi"><span>順流時的訊號</span><b>'+T.sig+'</b></div>'
+   +'<div class="kvi"><span>偏離時的訊號</span><b>'+T.notSelf+'</b></div></section>';
+  h+='<section class="cols"><div class="panel">'+svgBody(r)
+   +'<div class="legend"><span><i style="background:var(--ink)"></i>有意識（出生）</span><span><i style="background:var(--pink)"></i>無意識（出生前 88 天）</span><span><i style="background:var(--accent);height:10px;width:10px"></i>已定義中心</span></div>'
+   +'<p class="note" style="margin-top:8px">簡化示意圖：以直線表示通道，位置僅供辨識，與官方版面略有差異。</p></div>';
+  var sunP=r.P[0][2],earP=r.P[1][2],sunD=r.D[0][2],earD=r.D[1][2];
+  h+='<div class="stack">'
+   +'<div class="sec"><h3>內在權威</h3><p>'+A.d+'</p></div>'
+   +'<div class="sec"><h3>人生角色 '+p[0]+' / '+p[1]+'</h3><p><b>'+p[0]+' 爻・'+PNAME[p[0]]+'</b>（有意識）：'+PDESC[p[0]]+'</p><p><b>'+p[1]+' 爻・'+PNAME[p[1]]+'</b>（無意識）：'+PDESC[p[1]]+'</p></div>'
+   +'<div class="sec"><h3>定義：'+DEF_ZH[r.comps]+'</h3><p>'+DEF_D[r.comps]+'</p></div>'
+   +'<div class="sec"><h3>輪迴交叉的四個關鍵閘門</h3><div class="chips">'
+   +'<span class="chip mono">'+sunP.gate+'.'+sunP.line+'<small style="font-family:var(--body);margin-left:6px">有意識太陽</small></span>'
+   +'<span class="chip mono">'+earP.gate+'.'+earP.line+'<small style="font-family:var(--body);margin-left:6px">有意識地球</small></span>'
+   +'<span class="chip mono">'+sunD.gate+'.'+sunD.line+'<small style="font-family:var(--body);margin-left:6px">無意識太陽</small></span>'
+   +'<span class="chip mono">'+earD.gate+'.'+earD.line+'<small style="font-family:var(--body);margin-left:6px">無意識地球</small></span></div>'
+   +'<p class="note">這四個閘門決定你的人生主題（輪迴交叉）。完整交叉名稱需對照官方對照表，這裡僅列出閘門。</p></div></div></section>';
+  h+='<section class="sec"><h2>九大能量中心</h2><div class="centers">';
+  CEN.forEach(function(c){var on=!!r.defC[c.id];
+    h+='<div class="cen"><b>'+c.zh+'<span class="chip'+(on?" on":"")+'">'+(on?"已定義":"未定義")+'</span></b><p>'+c.t+'。'+(on?"穩定、固定的能量來源。":"開放，容易放大外界的影響。")+'</p></div>'});
+  h+='</div><p class="note">已定義：這裡的能量穩定、固定，是你可以長期依賴、也容易影響他人的部分。<br>未定義（開放）：容易吸收並放大外界的能量，可能覺得被推著走，也代表能看見不同的觀點，是智慧累積的地方。</p></section>';
+  h+='<section class="sec"><h2>已定義的通道（'+r.ch.length+'）</h2>';
+  if(r.ch.length){
+    h+='<div class="chips">';
+    r.ch.slice().sort(function(a,b){return Math.min(a.a,a.b)-Math.min(b.a,b.b)}).forEach(function(c){
+      h+='<span class="chip mono">'+c.a+'-'+c.b+'<small style="font-family:var(--body);margin-left:6px">'+cenOf(c.ca).short+'↔'+cenOf(c.cb).short+'</small></span>'});
+    h+='</div>';
+  }else h+='<p>沒有任何完整通道，這是反映者的特徵。</p>';
+  h+='</section>';
+  h+='<section class="sec"><h2>行星與閘門位置</h2><div class="panel tablebox"><table><thead><tr><th>天體</th><th class="p">有意識</th><th class="d">無意識</th></tr></thead><tbody>';
+  for(var i=0;i<r.P.length;i++){var a=r.P[i][2],b=r.D[i][2];h+='<tr><td>'+r.P[i][0]+'</td><td class="n p">'+a.gate+'.'+a.line+'</td><td class="n d">'+b.gate+'.'+b.line+'</td></tr>'}
+  h+='</tbody></table></div><p class="note">格式為「閘門.爻線」，例如 34.3 表示第 34 閘門第 3 爻。</p></section>';
+  h+='<div class="row"><button type="button" id="toJournal">用這份命盤開始記錄覺察日誌</button></div>';
+  $("out").innerHTML=h;
+  var b=$("toJournal");if(b)b.addEventListener("click",function(){showView("journal")});
+}
+
+/* ---------- 分頁二：覺察日誌 ---------- */
+function renderMine(){
+  var T=TYPES[natal.type],A=AUTH[natal.auth],h="";
+  h+='<div class="facts">';
+  h+='<div class="fact"><span>'+esc(prof.name?prof.name+" 的類型":"類型")+'</span><b>'+T.zh+'</b></div>';
+  h+='<div class="fact"><span>策略</span><b style="font-size:17px">'+T.strat+'</b></div>';
+  h+='<div class="fact"><span>內在權威</span><b>'+A.n.replace(/（.*$/,"")+'</b></div>';
+  h+='<div class="fact"><span>人生角色</span><b>'+natal.prof[0]+' / '+natal.prof[1]+'</b></div></div>';
+  h+='<div class="row" style="margin-top:12px"><button type="button" class="ghost small" id="editProf">修改出生資料</button>';
+  if(prof.demo)h+='<span class="note">目前使用示範命盤，請到「我的命盤」換成你自己的。</span>';
+  h+='</div>';
+  $("mine").innerHTML=h;
+  $("editProf").addEventListener("click",function(){showView("chart");$("pdate").focus()});
+}
+function transitFor(s){
+  var jd=dayJD(s),bs=bodies(jd).map(function(b){return {name:b[0],lon:b[1],g:gateLine(b[1])}});
+  var sun=bs[0].g,moon=bs[4].g,T={};bs.forEach(function(b){T[b.g.gate]=1});
+  var temp=[],lit={};
+  CH.forEach(function(c){
+    if(natal.defKey[c[0]+"-"+c[1]])return;
+    var a=c[0],b=c[1],na=!!natal.act[a],nb=!!natal.act[b],ta=!!T[a],tb=!!T[b];
+    if((na&&tb)||(nb&&ta)){
+      var mine=na&&tb?a:b,theirs=mine===a?b:a;temp.push({a:a,b:b,mine:mine,theirs:theirs});
+      [G2C[a],G2C[b]].forEach(function(cid){if(!natal.defC[cid])lit[cid]=1});
+    }
+  });
+  var sunRem=(Math.floor(sun.x/5.625)+1)*5.625-sun.x,moonRem=(Math.floor(moon.x/5.625)+1)*5.625-moon.x;
+  return {bs:bs,sun:sun,moon:moon,temp:temp,lit:lit,sunDays:sunRem/0.9856,moonDays:moonRem/13.18,nextSun:SEQ[(sun.gi+1)%64],nextMoon:SEQ[(moon.gi+1)%64]};
+}
+function renderFlow(s){
+  var tr=transitFor(s),dt=new Date(+s.slice(0,4),+s.slice(5,7)-1,+s.slice(8,10));
+  var title=dt.toLocaleDateString("zh-TW",{year:"numeric",month:"long",day:"numeric",weekday:"long"}),h='';
+  h+='<div class="facts"><div class="fact"><span>日期</span><b style="font-size:17px">'+title+'</b></div>'
+   +'<div class="fact"><span>太陽（約每 6 天換一個閘門）</span><b>'+tr.sun.gate+' 號・'+GK[tr.sun.gate]+'<i>.'+tr.sun.line+'</i></b></div>'
+   +'<div class="fact"><span>月亮（約每 2 天換一個閘門）</span><b>'+tr.moon.gate+' 號・'+GK[tr.moon.gate]+'<i>.'+tr.moon.line+'</i></b></div></div>';
+  h+='<p class="note">太陽約 '+tr.sunDays.toFixed(1)+' 天後進入 '+tr.nextSun+' 號閘門（'+GK[tr.nextSun]+'）；月亮約 '+Math.max(1,Math.round(tr.moonDays*24))+' 小時後進入 '+tr.nextMoon+' 號閘門（'+GK[tr.nextMoon]+'）。</p>';
+  h+='<div><h3 style="margin-bottom:8px">今天天上的位置</h3><div class="bodies">';
+  tr.bs.forEach(function(b){var mine=!!natal.act[b.g.gate];h+='<div class="bd'+(mine?' mine':'')+'"><small>'+b.name+'</small><b>'+b.g.gate+'.'+b.g.line+'</b><span>'+GK[b.g.gate]+(mine?"・你本來就有":"")+'</span></div>'});
+  h+='</div><p class="note" style="margin-top:6px">粗框代表這個閘門也在你的命盤裡，今天會被放大。</p></div>';
+  h+='<div><h3 style="margin-bottom:8px">今天與你的命盤連成的通道</h3>';
+  if(tr.temp.length){
+    h+='<div class="chips">';
+    tr.temp.forEach(function(c){h+='<span class="chip glow mono">'+c.a+'-'+c.b+'<small style="font-family:var(--body);margin-left:6px">你的 '+c.mine+'・天上的 '+c.theirs+'</small></span>'});
+    h+='</div><p class="note" style="margin-top:6px">這些通道只在今天暫時成立，像被借來的能量，可以留意自己是否比平常更想行動或表達。</p>';
+  }else h+='<p class="muted">今天沒有新的通道與你的命盤相連。</p>';
+  h+='</div><div><h3 style="margin-bottom:8px">今天的中心狀態</h3><div class="chips">';
+  CEN.forEach(function(c){
+    if(natal.defC[c.id])h+='<span class="chip on">'+c.zh+'・本命定義</span>';
+    else if(tr.lit[c.id])h+='<span class="chip glow">'+c.zh+'・今天被點亮</span>';
+    else h+='<span class="chip">'+c.zh+'・開放</span>';
+  });
+  h+='</div></div>';
+  var qs=['太陽走到「'+GK[tr.sun.gate]+'」：今天哪個場合，邀請我練習這個主題？','月亮在「'+GK[tr.moon.gate]+'」：此刻的感受，和這個主題有關嗎？',AUTH[natal.auth].q];
+  if(tr.temp.length)qs.push('今天天上的 '+tr.temp[0].theirs+' 號閘門與我的 '+tr.temp[0].mine+' 號相連：我是不是比平常更想說話或做決定？');
+  h+='<div><h3 style="margin-bottom:8px">今天的覺察提問</h3><ul class="q">';
+  qs.forEach(function(q){h+='<li>'+esc(q)+'</li>'});
+  h+='</ul></div>';
+  $("flow").innerHTML=h;
+}
+
+var EMO=["平靜","開心","滿足","驚喜","焦慮","疲憊","憤怒","挫敗","苦澀","失望"];
+var entries=[];
+function loadEntries(){var e=load(K_E,null);if(e===null){e=demoEntries();save(K_E,e)}entries=e}
+function demoEntries(){
+  var base=[[4,["平靜","滿足"],"yes","先睡一晚再回覆邀約，隔天心裡很清楚。","早上散步時發現自己沒那麼急。"],
+            [2,["焦慮","疲憊"],"no","臨時答應幫忙，事後覺得被推著走。","身體一直很緊，下午才發現沒吃飯。"],
+            [3,["開心","驚喜"],"yes","問了自己一次，對這件事是嗯哼，就接了。","朋友帶來意外的好消息。"],
+            [3,["挫敗","疲憊"],"no","沒有等回應就開始做，做到一半很煩。","覺得為什麼都是我在做。"],
+            [4,["平靜"],"part","部分事情有先停一下。","安靜的一天。"],
+            [5,["滿足","開心"],"yes","拒絕了一個沒感覺的邀約。","把時間留給喜歡的事。"],
+            [3,["焦慮"],"part","","情緒起伏比較大，早點睡。"],
+            [4,["平靜","滿足"],"yes","重要的決定放到明天。","慢慢來，感覺踏實。"]];
+  var out=[],now=new Date();
+  base.forEach(function(b,i){
+    var d=new Date(now.getFullYear(),now.getMonth(),now.getDate()-(base.length-i),12,0,0),s=ymd(d);
+    var bs=bodies(d.getTime()/86400000+2440587.5),sg=gateLine(bs[0][1]),mg=gateLine(bs[4][1]);
+    out.push({date:s,energy:b[0],emotions:b[1],follow:b[2],decision:b[3],note:b[4],sun:sg.gate+"."+sg.line,moon:mg.gate+"."+mg.line,demo:true});
+  });
+  return out;
+}
+function entryFor(s){for(var i=0;i<entries.length;i++)if(entries[i].date===s)return entries[i];return null}
+var curDay=ymd(new Date());
+function renderForm(){
+  var e=entryFor(curDay),dt=new Date(+curDay.slice(0,4),+curDay.slice(5,7)-1,+curDay.slice(8,10));
+  $("jdate").textContent="正在記錄："+dt.toLocaleDateString("zh-TW",{month:"long",day:"numeric",weekday:"long"})+(e?"（已有紀錄，儲存會覆蓋）":"");
+  $("energy").value=e?e.energy:3;$("eout").textContent=$("energy").value;
+  EMO.forEach(function(m,i){$("emo"+i).checked=!!(e&&e.emotions.indexOf(m)>=0)});
+  var f=e?e.follow:"part";
+  Array.prototype.forEach.call(document.getElementsByName("follow"),function(r){r.checked=r.value===f});
+  $("decision").value=e?e.decision:"";$("note").value=e?e.note:"";
+  $("delDay").hidden=!e;$("jmsg").textContent="";
+}
+function buildEmos(){var h="";EMO.forEach(function(m,i){h+='<label class="pick"><input type="checkbox" id="emo'+i+'" value="'+m+'"><span>'+m+'</span></label>'});$("emos").innerHTML=h}
+function onSave(ev){
+  ev.preventDefault();
+  var emos=[];EMO.forEach(function(m,i){if($("emo"+i).checked)emos.push(m)});
+  var follow="part";Array.prototype.forEach.call(document.getElementsByName("follow"),function(r){if(r.checked)follow=r.value});
+  var tr=transitFor(curDay);
+  var e={date:curDay,energy:+$("energy").value,emotions:emos,follow:follow,decision:$("decision").value.trim(),note:$("note").value.trim(),sun:tr.sun.gate+"."+tr.sun.line,moon:tr.moon.gate+"."+tr.moon.line};
+  entries=entries.filter(function(x){return x.date!==curDay});entries.push(e);
+  entries.sort(function(a,b){return a.date<b.date?-1:1});
+  var ok=save(K_E,entries);
+  $("jmsg").textContent=ok?"已儲存今天的日誌。":"已更新，但這個瀏覽器無法保存，關閉頁面後會消失。";
+  $("delDay").hidden=false;renderAll(true);
+}
+function onDelDay(){entries=entries.filter(function(x){return x.date!==curDay});save(K_E,entries);renderAll();$("jmsg").textContent="已刪除這天的紀錄。"}
+function avg(a){return a.length?a.reduce(function(s,x){return s+x},0)/a.length:0}
+function renderAnalysis(){
+  var el=$("an"),es=entries.slice().sort(function(a,b){return a.date<b.date?-1:1});
+  if(es.length<3){el.innerHTML='<p>再記錄幾天，這裡就會出現能量曲線與你的行為規律。目前有 '+es.length+' 筆。</p>';return}
+  var T=TYPES[natal.type],h="";
+  var follow=es.filter(function(e){return e.follow==="yes"}),nofol=es.filter(function(e){return e.follow!=="yes"});
+  var rate=es.reduce(function(s,e){return s+(e.follow==="yes"?1:e.follow==="part"?0.5:0)},0)/es.length;
+  h+='<div class="stats"><div class="stat"><b>'+avg(es.map(function(e){return e.energy})).toFixed(1)+'</b><span>平均能量（滿分 5）</span></div><div class="stat"><b>'+Math.round(rate*100)+'%</b><span>依策略與權威行動的比例</span></div><div class="stat"><b>'+es.length+'</b><span>已記錄天數</span></div></div>';
+  var last=es.slice(-14),W=600,H=220,L=36,R=16,TP=14,B=34,n=last.length;
+  var X=function(i){return n===1?(L+W-R)/2:L+(W-L-R)*i/(n-1)},Y=function(v){return TP+(H-TP-B)*(5-v)/4};
+  var s='<svg class="chart" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="最近 '+n+' 天的能量曲線">';
+  for(var v=1;v<=5;v++){s+='<line class="gl" x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(v)+'" y2="'+Y(v)+'"/><text class="ax" x="'+(L-8)+'" y="'+(Y(v)+4)+'" text-anchor="end">'+v+'</text>'}
+  s+='<polyline class="ln" points="'+last.map(function(e,i){return X(i).toFixed(1)+","+Y(e.energy).toFixed(1)}).join(" ")+'"/>';
+  last.forEach(function(e,i){s+='<circle class="'+(i===n-1?"dot end":"dot")+'" cx="'+X(i).toFixed(1)+'" cy="'+Y(e.energy).toFixed(1)+'" r="'+(i===n-1?6:4)+'"/>';
+    if(i===0||i===n-1||i%3===0)s+='<text class="ax" x="'+X(i).toFixed(1)+'" y="'+(H-10)+'" text-anchor="middle">'+e.date.slice(5).replace("-","/")+'</text>'});
+  h+='<div><h3 style="margin-bottom:8px">最近 '+n+' 天的能量</h3>'+s+'</svg></div>';
+  var cnt={};EMO.forEach(function(m){cnt[m]=0});es.forEach(function(e){e.emotions.forEach(function(m){cnt[m]=(cnt[m]||0)+1})});
+  var mx=Math.max.apply(null,EMO.map(function(m){return cnt[m]}))||1;
+  var bs='<svg class="chart" viewBox="0 0 600 '+(EMO.length*26+8)+'" role="img" aria-label="各種情緒出現的天數">';
+  EMO.forEach(function(m,i){var y=4+i*26,w=(600-120)*cnt[m]/mx;bs+='<text class="ax" x="0" y="'+(y+15)+'" style="font-family:var(--body);font-size:14px">'+m+'</text><rect class="bar" x="56" y="'+y+'" width="'+Math.max(0,w).toFixed(1)+'" height="18" rx="9"/><text class="ax" x="'+(62+w).toFixed(1)+'" y="'+(y+14)+'">'+cnt[m]+'</text>'});
+  h+='<div><h3 style="margin-bottom:8px">情緒出現的天數</h3>'+bs+'</svg></div>';
+  var ins=[];
+  if(follow.length&&nofol.length){var a1=avg(follow.map(function(e){return e.energy})),a2=avg(nofol.map(function(e){return e.energy})),d=a1-a2;
+    ins.push('完整依策略與權威行動的日子，平均能量 '+a1.toFixed(1)+'；其他日子 '+a2.toFixed(1)+(Math.abs(d)>=0.3?(d>0?'，高出 '+d.toFixed(1)+'。':'，反而低 '+(-d).toFixed(1)+'，可以想想是不是當天事情太滿。'):'，差異不大。'))}
+  T.nots.forEach(function(m){var days=es.filter(function(e){return e.emotions.indexOf(m)>=0});
+    if(days.length){var off=days.filter(function(e){return e.follow!=="yes"}).length;
+      ins.push('「'+m+'」是'+T.zh+'的非自己訊號。你有 '+days.length+' 天記下了它，其中 '+off+' 天沒有完整依策略行動。'+(off===days.length?'它很可能是在提醒你回到「'+T.strat+'」。':''))}});
+  var bySun={};es.forEach(function(e){if(e.sun){var g=e.sun.split(".")[0];(bySun[g]=bySun[g]||[]).push(e.energy)}});
+  var top=Object.keys(bySun).filter(function(g){return bySun[g].length>=2}).sort(function(a,b){return avg(bySun[b])-avg(bySun[a])});
+  if(top.length){var g=top[0];ins.push('太陽在 '+g+' 號閘門（'+GK[g]+'）的日子，平均能量最高：'+avg(bySun[g]).toFixed(1)+'（共 '+bySun[g].length+' 天）。')}
+  if(top.length>1){var g2=top[top.length-1];ins.push('太陽在 '+g2+' 號閘門（'+GK[g2]+'）的日子，平均能量最低：'+avg(bySun[g2]).toFixed(1)+'。這天適合放慢，多留給自己。')}
+  if(ins.length){h+='<div><h3 style="margin-bottom:8px">你的規律</h3><ul class="ins">';ins.forEach(function(t){h+='<li>'+esc(t)+'</li>'});h+='</ul></div>'}
+  if(es.some(function(e){return e.demo}))h+='<p class="note">目前包含示範資料，分析結果僅供參考。</p>';
+  el.innerHTML=h;
+}
+function renderHistory(){
+  var es=entries.slice().sort(function(a,b){return a.date<b.date?1:-1}).slice(0,60),h="";
+  $("clrDemo").hidden=!entries.some(function(e){return e.demo});
+  if(!es.length){$("hist").innerHTML='<div class="card"><p class="muted">還沒有紀錄。填寫上方「今日日誌」並儲存，第一筆就會出現在這裡。</p></div>';return}
+  es.forEach(function(e){
+    var dt=new Date(+e.date.slice(0,4),+e.date.slice(5,7)-1,+e.date.slice(8,10)),fl=e.follow==="yes"?"有依策略":e.follow==="part"?"部分依策略":"未依策略";
+    h+='<article class="card he"><div class="top"><span class="when">'+dt.toLocaleDateString("zh-TW",{month:"long",day:"numeric",weekday:"short"})+(e.demo?' <span class="demo">示範</span>':'')+'</span><span class="row"><span class="chip mono">能量 '+e.energy+'/5</span><span class="chip'+(e.follow==="yes"?' on':'')+'">'+fl+'</span>'+(e.sun?'<span class="chip mono">太陽 '+e.sun+'</span>':'')+(e.moon?'<span class="chip mono">月亮 '+e.moon+'</span>':'')+'</span></div>';
+    if(e.emotions.length){h+='<div class="chips">';e.emotions.forEach(function(m){h+='<span class="chip">'+m+'</span>'});h+='</div>'}
+    if(e.decision)h+='<p><b>決定：</b>'+esc(e.decision)+'</p>';
+    if(e.note)h+='<p><b>筆記：</b>'+esc(e.note)+'</p>';
+    h+='<div class="row"><button type="button" class="ghost small" data-edit="'+e.date+'">編輯</button></div></article>';
+  });
+  $("hist").innerHTML=h;
+}
+function exportText(){
+  return entries.slice().sort(function(a,b){return a.date<b.date?-1:1}).map(function(e){
+    return e.date+"｜能量 "+e.energy+"/5｜"+(e.follow==="yes"?"有依策略":e.follow==="part"?"部分依策略":"未依策略")+"｜太陽 "+(e.sun||"")+"\n情緒："+e.emotions.join("、")+"\n決定："+e.decision+"\n筆記："+e.note}).join("\n\n");
+}
+function renderAll(keepForm){renderMine();renderFlow(curDay);renderAnalysis();renderHistory();if(!keepForm)renderForm()}
+function setDay(s){curDay=s;$("day").value=s;renderAll()}
+
+/* ---------- 分頁切換 ---------- */
+function showView(v){
+  ["chart","journal"].forEach(function(k){
+    $("view-"+k).hidden=(k!==v);
+    var t=$("tab-"+k);t.setAttribute("aria-selected",k===v?"true":"false");
+  });
+  save(K_V,v);
+  try{window.scrollTo(0,0)}catch(e){}
+}
+
+/* ---------- 啟動 ---------- */
+function init(){
+  var tz=$("ptz");TZS.forEach(function(t){var o=document.createElement("option");o.value=t[0];o.textContent=t[1];if(+prof.tz===t[0])o.selected=true;tz.appendChild(o)});
+  $("pname").value=prof.name||"";$("pdate").value=prof.date;$("ptime").value=prof.time;
+  buildEmos();loadEntries();computeNatal();renderChart();
+  $("day").value=curDay;$("day").max=ymd(new Date(Date.now()+30*86400000));
+  renderAll();
+  $("tab-chart").addEventListener("click",function(){showView("chart")});
+  $("tab-journal").addEventListener("click",function(){showView("journal")});
+  $("day").addEventListener("change",function(){if($("day").value)setDay($("day").value)});
+  $("goToday").addEventListener("click",function(){setDay(ymd(new Date()))});
+  $("energy").addEventListener("input",function(){$("eout").textContent=$("energy").value});
+  $("jf").addEventListener("submit",onSave);
+  $("delDay").addEventListener("click",onDelDay);
+  $("pf").addEventListener("submit",function(ev){
+    ev.preventDefault();var err=$("perr");err.hidden=true;
+    var d=$("pdate").value,t=$("ptime").value,y=+d.slice(0,4);
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(d)||!/^\d{2}:\d{2}/.test(t)){err.textContent="請輸入完整的出生日期與時間。";err.hidden=false;return}
+    if(y<1850||y>2049){err.textContent="目前只支援 1850 至 2049 年出生。";err.hidden=false;return}
+    prof={name:$("pname").value.trim(),date:d,time:t,tz:parseFloat($("ptz").value),demo:false};save(K_P,prof);
+    computeNatal();renderChart();renderAll();
+  });
+  $("hist").addEventListener("click",function(ev){
+    var b=ev.target.closest&&ev.target.closest("[data-edit]");if(!b)return;
+    setDay(b.getAttribute("data-edit"));$("journal").scrollIntoView({behavior:"smooth"});
+  });
+  $("clrDemo").addEventListener("click",function(){entries=entries.filter(function(e){return !e.demo});save(K_E,entries);renderAll();$("hmsg").textContent="已清除示範資料。"});
+  $("copyAll").addEventListener("click",function(){
+    var t=exportText(),box=$("exp");box.value=t;
+    var done=function(){$("hmsg").textContent="已複製。";box.style.display="none"};
+    var fallback=function(){box.style.display="block";box.focus();box.select();$("hmsg").textContent="請按 Ctrl+C（或長按）複製下方文字。"};
+    try{navigator.clipboard.writeText(t).then(done,fallback)}catch(e){fallback()}
+  });
+  var v=load(K_V,"chart");showView(v==="journal"&&!prof.demo?"journal":"chart");
+}
+init();
+})();
+</script>
+</html>
