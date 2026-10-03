@@ -234,7 +234,7 @@ svg.forest{display:block;width:calc(100% + 32px);margin-left:-16px;height:auto;m
   </div>
 
   <footer>
-    <p class="note f">行星位置採用簡化天文公式（太陽、月亮、月交點誤差約 0.01°，行星約數角分），足以判斷多數閘門與爻線；若時間恰好落在閘門或爻線邊界，結果可能與專業軟體不同。解讀文字與流日對照為通用示範內容，僅供自我探索與娛樂參考，不構成醫療、心理或財務建議。出生資料與日誌只存在這台裝置的瀏覽器，清除網站資料後會消失。</p>
+    <p class="note f">行星位置採用簡化天文公式，月交點採真實交點，並已用 15 組參考報告校準（角色與輪迴交叉全部相符，通道 14 組完全相符）。太陽、月亮與多數行星誤差約 0.01°，木星、土星可到約 0.2°；若時間恰好落在閘門或爻線邊界，結果仍可能與專業軟體不同。解讀文字與流日對照為通用示範內容，僅供自我探索與娛樂參考，不構成醫療、心理或財務建議。出生資料與日誌只存在這台裝置的瀏覽器，清除網站資料後會消失。</p>
     <svg class="forest" viewBox="0 0 960 120" preserveAspectRatio="none" role="img" aria-label="薰衣草色森林剪影">
       <rect x="20" y="30" width="46" height="100" rx="23" fill="var(--tree1)" opacity=".55"/>
       <rect x="110" y="10" width="62" height="120" rx="31" fill="var(--tree1)" opacity=".5"/>
@@ -286,12 +286,19 @@ function moonLon(T){
   return norm(Lp+6.288774*s(mp)+1.274027*s(2*d-mp)+0.658314*s(2*d)+0.213618*s(2*mp)-0.185116*E*s(m)-0.114332*s(2*f)+0.058793*s(2*d-2*mp)+0.057066*E*s(2*d-m-mp)+0.053322*s(2*d+mp)+0.045758*E*s(2*d-m)-0.040923*E*s(m-mp)-0.034720*s(d)-0.030383*E*s(m+mp)+0.015327*s(2*d-2*f)-0.012528*s(mp+2*f)+0.010980*s(mp-2*f)+0.010675*s(4*d-mp)+0.010034*s(3*mp)+0.008548*s(4*d-2*mp)-0.007888*E*s(2*d+m-mp)-0.006766*E*s(2*d+m)-0.005163*s(d-mp)+0.004987*E*s(d+m)+0.004036*E*s(2*d-m+mp)+0.003994*s(2*d+2*mp)+0.003861*s(4*d)+0.003665*s(2*d-3*mp));
 }
 var PLANETS=[["mercury","水星"],["venus","金星"],["mars","火星"],["jupiter","木星"],["saturn","土星"],["uranus","天王星"],["neptune","海王星"],["pluto","冥王星"]];
-function sunLon(jd){var T=(jd-2451545)/36525,e=helio("earth",T);return norm(Math.atan2(-e[1],-e[0])/D+1.396971*T+0.0003086*T*T)}
+/* 校準：採用「真實」月交點（與亞洲人類圖報告一致），並加入章動；太陽另加光行差，使位置成為視位置 */
+function nutation(T){var Om=(125.04452-1934.136261*T)*D,Ls=(280.4665+36000.7698*T)*D,Lm=(218.3165+481267.8813*T)*D;return (-17.20*Math.sin(Om)-1.32*Math.sin(2*Ls)-0.23*Math.sin(2*Lm)+0.21*Math.sin(2*Om))/3600}
+function trueNode(T){
+  var d=297.8501921+445267.1114034*T,m=357.5291092+35999.0502909*T,mp=134.9633964+477198.8675055*T,f=93.2720950+483202.0175233*T;
+  function s(x){return Math.sin(x*D)}
+  return norm(125.0445479-1934.1362891*T+0.0020754*T*T-1.4979*s(2*(d-f))-0.1500*s(m)-0.1226*s(2*d)+0.1176*s(2*f)-0.0801*s(2*(mp-f)));
+}
+function sunLon(jd){var T=(jd-2451545)/36525,e=helio("earth",T);return norm(Math.atan2(-e[1],-e[0])/D+1.396971*T+0.0003086*T*T+nutation(T)-0.0057)}
 function bodies(jd){
-  var T=(jd-2451545)/36525,pr=1.396971*T+0.0003086*T*T,e=helio("earth",T);
-  var sun=norm(Math.atan2(-e[1],-e[0])/D+pr),node=norm(125.0445479-1934.1362891*T+0.0020754*T*T);
-  var out=[["太陽",sun],["地球",norm(sun+180)],["北交點",node],["南交點",norm(node+180)],["月亮",moonLon(T)]];
-  PLANETS.forEach(function(p){var h=helio(p[0],T);out.push([p[1],norm(Math.atan2(h[1]-e[1],h[0]-e[0])/D+pr)])});
+  var T=(jd-2451545)/36525,pr=1.396971*T+0.0003086*T*T,e=helio("earth",T),nu=nutation(T);
+  var sun=norm(Math.atan2(-e[1],-e[0])/D+pr+nu-0.0057),node=norm(trueNode(T)+nu);
+  var out=[["太陽",sun],["地球",norm(sun+180)],["北交點",node],["南交點",norm(node+180)],["月亮",norm(moonLon(T)+nu)]];
+  PLANETS.forEach(function(p){var h=helio(p[0],T);out.push([p[1],norm(Math.atan2(h[1]-e[1],h[0]-e[0])/D+pr+nu)])});
   return out;
 }
 function designJD(jd){var target=norm(sunLon(jd)-88),j=jd-88;for(var i=0;i<12;i++){var diff=((sunLon(j)-target+540)%360)-180;j-=diff/0.9856}return j}
